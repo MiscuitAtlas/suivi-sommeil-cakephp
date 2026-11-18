@@ -19,7 +19,7 @@ class UsersControllerTest extends AppTestCase
     {
         $this->get('/');
         $this->assertResponseOk();
-        $this->assertResponseContains('Dormez par cycles');
+        $this->assertResponseContains('<title>Dormez par cycles – Suivi du sommeil</title>');
         $this->assertHeader('X-Frame-Options', 'DENY');
         $this->assertHeader('X-Content-Type-Options', 'nosniff');
         $this->assertFalse($this->_response->hasHeader('Strict-Transport-Security'));

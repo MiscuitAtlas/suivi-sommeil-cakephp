@@ -4,7 +4,7 @@
  * @var array<int, string> $example
  * @var bool $demoEnabled
  */
-$this->assign('title', '');
+$this->assign('title', 'Dormez par cycles');
 ?>
 <section class="hero">
     <div>
