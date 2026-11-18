@@ -22,6 +22,22 @@ class UsersControllerTest extends AppTestCase
         $this->assertResponseContains('Dormez par cycles');
         $this->assertHeader('X-Frame-Options', 'DENY');
         $this->assertHeader('X-Content-Type-Options', 'nosniff');
+        $this->assertFalse($this->_response->hasHeader('Strict-Transport-Security'));
+    }
+
+    public function testHttpsAddsStrictTransportSecurityAndSecureCookies(): void
+    {
+        // Le serveur web signale le HTTPS à PHP par la variable HTTPS.
+        $_SERVER['HTTPS'] = 'on';
+        $this->configRequest(['environment' => ['HTTPS' => 'on']]);
+        try {
+            $this->get('/connexion');
+        } finally {
+            unset($_SERVER['HTTPS']);
+        }
+        $this->assertResponseOk();
+        $this->assertHeader('Strict-Transport-Security', 'max-age=31536000');
+        $this->assertTrue($this->_response->getCookie('csrfToken')['secure'] ?? false);
     }
 
     public function testLogin(): void

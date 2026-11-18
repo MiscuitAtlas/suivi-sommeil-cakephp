@@ -5,6 +5,7 @@ namespace App\Policy;
 
 use App\Model\Entity\User;
 use Authorization\IdentityInterface;
+use Cake\Core\Configure;
 
 final class AdminCheck
 {
@@ -19,5 +20,17 @@ final class AdminCheck
         $user = $identity->getOriginalData();
 
         return $user instanceof User && $user->isAdmin();
+    }
+
+    /**
+     * Seul un administrateur modifie le menu, et personne sur la démonstration en ligne :
+     * le menu y est partagé par tous les visiteurs.
+     *
+     * @param \Authorization\IdentityInterface $identity
+     * @return bool
+     */
+    public static function canChangeMenu(IdentityInterface $identity): bool
+    {
+        return self::isAdmin($identity) && !Configure::read('Demo.enabled');
     }
 }

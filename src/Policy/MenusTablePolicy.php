@@ -29,6 +29,6 @@ class MenusTablePolicy
      */
     public function canAdd(IdentityInterface $user, Table $menus): bool
     {
-        return AdminCheck::isAdmin($user);
+        return AdminCheck::canChangeMenu($user);
     }
 }

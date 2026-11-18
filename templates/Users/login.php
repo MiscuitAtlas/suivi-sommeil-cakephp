@@ -1,5 +1,8 @@
 <?php
-/** @var \App\View\AppView $this */
+/**
+ * @var \App\View\AppView $this
+ * @var bool $demoEnabled
+ */
 $this->assign('title', 'Connexion');
 ?>
 <div class="narrow">
@@ -14,4 +17,11 @@ $this->assign('title', 'Connexion');
         <?= $this->Form->end() ?>
     </section>
     <p class="muted">Pas encore de compte ? <a href="<?= $this->Url->build(['action' => 'register']) ?>">Créer un compte</a></p>
+    <?php if ($demoEnabled) : ?>
+        <section class="panel">
+            <h2>Démonstration</h2>
+            <p>Un compte avec trois semaines de nuits déjà saisies, rien qu'à vous, supprimé au bout de deux heures.</p>
+            <?= $this->Form->postButton('Essayer la démo', ['controller' => 'Demo', 'action' => 'start'], ['class' => 'button']) ?>
+        </section>
+    <?php endif; ?>
 </div>

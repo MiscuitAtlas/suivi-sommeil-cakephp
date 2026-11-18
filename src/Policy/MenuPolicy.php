@@ -20,7 +20,7 @@ class MenuPolicy
      */
     public function canEdit(IdentityInterface $user, Menu $menu): bool
     {
-        return AdminCheck::isAdmin($user);
+        return AdminCheck::canChangeMenu($user);
     }
 
     /**
@@ -32,7 +32,7 @@ class MenuPolicy
      */
     public function canDelete(IdentityInterface $user, Menu $menu): bool
     {
-        return AdminCheck::isAdmin($user);
+        return AdminCheck::canChangeMenu($user);
     }
 
     /**
@@ -44,6 +44,6 @@ class MenuPolicy
      */
     public function canMove(IdentityInterface $user, Menu $menu): bool
     {
-        return AdminCheck::isAdmin($user);
+        return AdminCheck::canChangeMenu($user);
     }
 }

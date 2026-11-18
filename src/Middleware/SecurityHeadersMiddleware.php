@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use Cake\Core\Configure;
+use Cake\Http\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -37,6 +38,11 @@ class SecurityHeadersMiddleware implements MiddlewareInterface
                 "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; " .
                 "form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
             );
+        }
+
+        // Servi en HTTPS : le navigateur n'utilisera plus que le HTTPS pour ce site.
+        if ($request instanceof ServerRequest && $request->is('https')) {
+            $response = $response->withHeader('Strict-Transport-Security', 'max-age=31536000');
         }
 
         return $response;

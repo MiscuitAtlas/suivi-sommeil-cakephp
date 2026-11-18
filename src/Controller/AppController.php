@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Model\Entity\User;
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 
 /**
@@ -38,6 +39,7 @@ class AppController extends Controller
         parent::beforeRender($event);
         $user = $this->currentUser();
         $this->set('currentUser', $user);
+        $this->set('demoEnabled', (bool)Configure::read('Demo.enabled'));
         if ($user !== null && $this->viewBuilder()->getLayout() !== 'ajax') {
             $this->set('navMenus', $this->fetchTable('Menus')->find()->orderBy(['position' => 'ASC'])->all());
         }

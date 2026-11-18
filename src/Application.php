@@ -29,6 +29,7 @@ use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
+use function Cake\Core\env;
 
 class Application extends BaseApplication implements
     AuthenticationServiceProviderInterface,
@@ -62,7 +63,8 @@ class Application extends BaseApplication implements
             ->add(new AssetMiddleware(['cacheTime' => Configure::read('Asset.cacheTime')]))
             ->add(new RoutingMiddleware($this))
             ->add(new BodyParserMiddleware())
-            ->add(new CsrfProtectionMiddleware(['httponly' => true]))
+            // Cookie réservé au HTTPS quand le site est servi en HTTPS.
+            ->add(new CsrfProtectionMiddleware(['httponly' => true, 'secure' => (bool)env('HTTPS')]))
             ->add(new AuthenticationMiddleware($this))
             // Chaque action doit vérifier les droits ou dire explicitement qu'elle n'en a pas besoin.
             ->add(new AuthorizationMiddleware($this, ['requireAuthorizationCheck' => true]));

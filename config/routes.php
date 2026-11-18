@@ -13,6 +13,7 @@ return function (RouteBuilder $routes): void {
 
         $builder->connect('/connexion', ['controller' => 'Users', 'action' => 'login']);
         $builder->connect('/inscription', ['controller' => 'Users', 'action' => 'register']);
+        $builder->connect('/demo', ['controller' => 'Demo', 'action' => 'start']);
         $builder->connect('/deconnexion', ['controller' => 'Users', 'action' => 'logout']);
         $builder->connect('/compte', ['controller' => 'Users', 'action' => 'account']);
         $builder->connect('/compte/mot-de-passe', ['controller' => 'Users', 'action' => 'password']);

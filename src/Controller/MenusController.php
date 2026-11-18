@@ -33,6 +33,8 @@ class MenusController extends AppController
     {
         $this->Authorization->authorize($this->Menus, 'index');
         $this->set('menus', $this->Menus->find()->orderBy(['position' => 'ASC'])->all());
+        // Sur la démonstration en ligne, le menu est en lecture seule.
+        $this->set('canChange', $this->Authorization->can($this->Menus, 'add'));
     }
 
     /**

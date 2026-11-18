@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var \Cake\Collection\CollectionInterface<\App\Model\Entity\Menu> $menus
+ * @var bool $canChange
  */
 $this->assign('title', 'Menu de navigation');
 $items = $menus->toList();
@@ -12,9 +13,14 @@ $last = count($items) - 1;
         <h1>Menu de navigation</h1>
         <p class="muted">Les liens s'affichent dans cet ordre pour tous les utilisateurs.</p>
     </div>
-    <a class="button" href="<?= $this->Url->build(['action' => 'add']) ?>">Ajouter un lien</a>
+    <?php if ($canChange) : ?>
+        <a class="button" href="<?= $this->Url->build(['action' => 'add']) ?>">Ajouter un lien</a>
+    <?php endif; ?>
 </div>
 <section class="panel">
+    <?php if (!$canChange) : ?>
+        <p class="notice">Sur la démonstration en ligne, le menu est partagé par tous les visiteurs : il reste en lecture seule.</p>
+    <?php endif; ?>
     <div class="table-wrap">
         <table>
             <thead>
@@ -22,7 +28,9 @@ $last = count($items) - 1;
                     <th scope="col">Ordre</th>
                     <th scope="col">Intitulé</th>
                     <th scope="col">Lien</th>
-                    <th scope="col"><span class="sr-only">Actions</span></th>
+                    <?php if ($canChange) : ?>
+                        <th scope="col"><span class="sr-only">Actions</span></th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +39,7 @@ $last = count($items) - 1;
                         <td><?= $i + 1 ?></td>
                         <th scope="row"><?= h($menu->label) ?></th>
                         <td><code><?= h($menu->url) ?></code></td>
+                        <?php if ($canChange) : ?>
                         <td>
                             <div class="actions">
                                 <?php if ($i > 0) : ?>
@@ -47,6 +56,7 @@ $last = count($items) - 1;
                                 ]) ?>
                             </div>
                         </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

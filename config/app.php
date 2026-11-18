@@ -466,4 +466,18 @@ return [
         'errorLevel' => null,
         'fixtureStrategy' => null,
     ],
+
+    /*
+     * Démonstration en ligne (variable d'environnement DEMO_MODE=true).
+     *
+     * - `enabled` - Bouton « Essayer la démo » : chaque visiteur reçoit son propre compte,
+     *   avec trois semaines de nuits déjà saisies. Le menu passe en lecture seule.
+     * - `lifetime` - Durée de vie d'un compte de démonstration.
+     * - `maxAccounts` - Nombre maximal de comptes de démonstration conservés.
+     */
+    'Demo' => [
+        'enabled' => filter_var(env('DEMO_MODE', false), FILTER_VALIDATE_BOOLEAN),
+        'lifetime' => '2 hours',
+        'maxAccounts' => 200,
+    ],
 ];

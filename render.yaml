@@ -1,0 +1,12 @@
+# Démonstration en ligne sur Render : https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: suivi-sommeil
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    autoDeploy: true
+    envVars:
+      - key: SECURITY_SALT
+        generateValue: true

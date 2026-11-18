@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var array<int, string> $example
+ * @var bool $demoEnabled
  */
 $this->assign('title', '');
 ?>
@@ -9,10 +10,18 @@ $this->assign('title', '');
     <div>
         <h1>Dormez par cycles, pas par heures.</h1>
         <p>Un cycle de sommeil dure environ 90 minutes. Se réveiller à la fin d'un cycle plutôt qu'au milieu change la matinée. Notez vos nuits : l'application compte vos cycles et suit votre semaine.</p>
-        <div class="button-row">
-            <a class="button" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'register']) ?>">Créer un compte</a>
-            <a class="button secondary" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>">Se connecter</a>
-        </div>
+        <?php if ($demoEnabled) : ?>
+            <div class="button-row">
+                <?= $this->Form->postButton('Essayer la démo', ['controller' => 'Demo', 'action' => 'start'], ['class' => 'button']) ?>
+                <a class="button secondary" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'register']) ?>">Créer un compte</a>
+            </div>
+            <p class="muted small">La démo crée un compte avec trois semaines de nuits déjà saisies, supprimé au bout de deux heures.</p>
+        <?php else : ?>
+            <div class="button-row">
+                <a class="button" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'register']) ?>">Créer un compte</a>
+                <a class="button secondary" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>">Se connecter</a>
+            </div>
+        <?php endif; ?>
     </div>
     <div class="timeline" role="img" aria-label="Couché à 23 heures : réveil en fin de cycle à <?= h($example[5]) ?> ou à <?= h($example[6]) ?>">
         <p class="muted small">Couché à 23:00, réveil en fin de cycle :</p>

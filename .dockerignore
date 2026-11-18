@@ -1,0 +1,12 @@
+.git
+.github
+vendor
+tmp
+logs
+docs
+tests
+config/app_local.php
+phpcs.xml
+phpunit.xml.dist
+.phpunit.cache
+*.sqlite
