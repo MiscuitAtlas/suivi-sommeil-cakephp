@@ -3,21 +3,9 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Menu $menu
  */
+$this->assign('title', 'Ajouter un lien');
 ?>
-<div class="row">
-    <div class="column column-80">
-        <div class="menus form content">
-            <?= $this->Form->create($menu) ?>
-            <fieldset>
-                <legend><?= __('Add Menu') ?></legend>
-                <?php
-                    echo $this->Form->control('ordre');
-                    echo $this->Form->control('intitule');
-                    echo $this->Form->control('lien');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
-        </div>
-    </div>
+<div class="narrow">
+    <h1>Ajouter un lien au menu</h1>
+    <section class="panel"><?= $this->element('menu_form', ['menu' => $menu, 'submit' => 'Ajouter le lien']) ?></section>
 </div>

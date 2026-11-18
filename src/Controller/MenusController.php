@@ -3,83 +3,115 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Http\Exception\BadRequestException;
+use App\Model\Table\MenusTable;
+use Cake\Http\Response;
 
+/**
+ * Gestion du menu de navigation, réservée aux administrateurs.
+ */
 class MenusController extends AppController
 {
-    public function index()
+    protected MenusTable $Menus;
+
+    /**
+     * Les liens sont listés dans l'ordre d'affichage.
+     *
+     * @return void
+     */
+    public function initialize(): void
     {
-        $menus = $this->paginate($this->Menus);
-        $this->set(compact('menus'));
+        parent::initialize();
+        $this->Menus = $this->fetchTable('Menus');
     }
 
-    public function view($id = null)
+    /**
+     * Liste des liens du menu.
+     *
+     * @return void
+     */
+    public function index(): void
     {
-        $menu = $this->Menus->get($id);
-        $this->set(compact('menu'));
+        $this->Authorization->authorize($this->Menus, 'index');
+        $this->set('menus', $this->Menus->find()->orderBy(['position' => 'ASC'])->all());
     }
 
-    public function add()
+    /**
+     * Ajoute un lien en fin de menu.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function add(): ?Response
     {
+        $this->Authorization->authorize($this->Menus, 'add');
         $menu = $this->Menus->newEmptyEntity();
         if ($this->request->is('post')) {
             $menu = $this->Menus->patchEntity($menu, $this->request->getData());
             if ($this->Menus->save($menu)) {
-                $this->Flash->success(__('Le menu a été ajouté.'));
+                $this->Flash->success('Le lien a été ajouté au menu.');
+
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('Impossible d\'ajouter le menu. Veuillez réessayer.'));
+            $this->Flash->error('Le lien n\'a pas pu être ajouté.');
         }
         $this->set(compact('menu'));
+
+        return null;
     }
 
-    public function edit($id = null)
+    /**
+     * Modifie un lien du menu.
+     *
+     * @param string $id
+     * @return \Cake\Http\Response|null
+     */
+    public function edit(string $id): ?Response
     {
         $menu = $this->Menus->get($id);
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        $this->Authorization->authorize($menu, 'edit');
+        if ($this->request->is(['post', 'put', 'patch'])) {
             $menu = $this->Menus->patchEntity($menu, $this->request->getData());
             if ($this->Menus->save($menu)) {
-                $this->Flash->success(__('Le menu a été modifié.'));
+                $this->Flash->success('Le lien a été modifié.');
+
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('Impossible de modifier le menu. Veuillez réessayer.'));
+            $this->Flash->error('Le lien n\'a pas pu être modifié.');
         }
         $this->set(compact('menu'));
+
+        return null;
     }
 
-    public function delete($id = null)
+    /**
+     * Supprime un lien du menu.
+     *
+     * @param string $id
+     * @return \Cake\Http\Response
+     */
+    public function delete(string $id): Response
     {
         $this->request->allowMethod(['post', 'delete']);
         $menu = $this->Menus->get($id);
+        $this->Authorization->authorize($menu, 'delete');
         if ($this->Menus->delete($menu)) {
-            $this->Flash->success(__('Le menu a été supprimé.'));
+            $this->Flash->success(sprintf('Le lien « %s » a été supprimé.', $menu->label));
         } else {
-            $this->Flash->error(__('Impossible de supprimer le menu. Veuillez réessayer.'));
+            $this->Flash->error('Le lien n\'a pas pu être supprimé.');
         }
+
         return $this->redirect(['action' => 'index']);
     }
 
-    public function updateOrder()
+    /**
+     * Monte ou descend un lien d'un cran.
+     */
+    public function move(string $id, string $direction): Response
     {
         $this->request->allowMethod(['post']);
+        $menu = $this->Menus->get($id);
+        $this->Authorization->authorize($menu, 'move');
+        $this->Menus->move($menu, $direction === 'monter' ? 'up' : 'down');
 
-        $orderData = $this->request->getData('order');
-
-        if (!empty($orderData)) {
-            foreach ($orderData as $item) {
-                if (!isset($item['id'], $item['ordre'])) {
-                    throw new \Cake\Http\Exception\BadRequestException('Données manquantes.');
-                }
-                $menu = $this->Menus->get($item['id']);
-                $menu->ordre = $item['ordre'];
-                if (!$this->Menus->save($menu)) {
-                    throw new \Cake\Http\Exception\InternalErrorException('Erreur lors de la sauvegarde.');
-                }
-            }
-            return $this->response->withType('application/json')
-                ->withStringBody(json_encode(['message' => 'L\'ordre a été mis à jour.']));
-        } else {
-            throw new \Cake\Http\Exception\BadRequestException('Aucune donnée reçue.');
-        }
+        return $this->redirect(['action' => 'index', '#' => 'menu-' . $menu->id]);
     }
 }

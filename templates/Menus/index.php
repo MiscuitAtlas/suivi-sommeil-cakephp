@@ -1,52 +1,55 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var iterable<\App\Model\Entity\Menu> $menus
+ * @var \Cake\Collection\CollectionInterface<\App\Model\Entity\Menu> $menus
  */
+$this->assign('title', 'Menu de navigation');
+$items = $menus->toList();
+$last = count($items) - 1;
 ?>
-<div class="menus index content">
-    <?= $this->Html->link(__('New Menu'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Menus') ?></h3>
-    <div class="table-responsive">
+<div class="page-head">
+    <div>
+        <h1>Menu de navigation</h1>
+        <p class="muted">Les liens s'affichent dans cet ordre pour tous les utilisateurs.</p>
+    </div>
+    <a class="button" href="<?= $this->Url->build(['action' => 'add']) ?>">Ajouter un lien</a>
+</div>
+<section class="panel">
+    <div class="table-wrap">
         <table>
             <thead>
                 <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
-                    <th><?= $this->Paginator->sort('ordre') ?></th>
-                    <th><?= $this->Paginator->sort('intitule') ?></th>
-                    <th><?= $this->Paginator->sort('lien') ?></th>
-                    <th><?= $this->Paginator->sort('created') ?></th>
-                    <th><?= $this->Paginator->sort('modified') ?></th>
-                    <th class="actions"><?= __('Actions') ?></th>
+                    <th scope="col">Ordre</th>
+                    <th scope="col">Intitulé</th>
+                    <th scope="col">Lien</th>
+                    <th scope="col"><span class="sr-only">Actions</span></th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($menus as $menu): ?>
-                <tr>
-                    <td><?= $this->Number->format($menu->id) ?></td>
-                    <td><?= $this->Number->format($menu->ordre) ?></td>
-                    <td><?= h($menu->intitule) ?></td>
-                    <td><?= h($menu->lien) ?></td>
-                    <td><?= h($menu->created) ?></td>
-                    <td><?= h($menu->modified) ?></td>
-                    <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $menu->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $menu->id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $menu->id], ['confirm' => __('Are you sure you want to delete # {0}?', $menu->id)]) ?>
-                    </td>
-                </tr>
+                <?php foreach ($items as $i => $menu) : ?>
+                    <tr id="menu-<?= $menu->id ?>">
+                        <td><?= $i + 1 ?></td>
+                        <th scope="row"><?= h($menu->label) ?></th>
+                        <td><code><?= h($menu->url) ?></code></td>
+                        <td>
+                            <div class="actions">
+                                <?php if ($i > 0) : ?>
+                                    <?= $this->Form->postButton('↑', ['action' => 'move', $menu->id, 'monter'], ['class' => 'button small secondary', 'aria-label' => 'Monter « ' . $menu->label . ' »']) ?>
+                                <?php endif; ?>
+                                <?php if ($i < $last) : ?>
+                                    <?= $this->Form->postButton('↓', ['action' => 'move', $menu->id, 'descendre'], ['class' => 'button small secondary', 'aria-label' => 'Descendre « ' . $menu->label . ' »']) ?>
+                                <?php endif; ?>
+                                <a class="button small secondary" href="<?= $this->Url->build(['action' => 'edit', $menu->id]) ?>">Modifier<span class="sr-only"> « <?= h($menu->label) ?> »</span></a>
+                                <?= $this->Form->postButton('Supprimer', ['action' => 'delete', $menu->id], [
+                                    'class' => 'button small danger secondary',
+                                    'aria-label' => 'Supprimer « ' . $menu->label . ' »',
+                                    'form' => ['data-confirm' => 'Retirer « ' . $menu->label . ' » du menu ?'],
+                                ]) ?>
+                            </div>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
-    </div>
-</div>
+</section>

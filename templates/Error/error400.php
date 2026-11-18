@@ -2,25 +2,25 @@
 /**
  * @var \App\View\AppView $this
  * @var string $message
- * @var string $url
+ * @var int $code
  */
 use Cake\Core\Configure;
 
-$this->layout = 'error';
-
-if (Configure::read('debug')) :
-    $this->layout = 'dev_error';
-
-    $this->assign('title', $message);
+$this->setLayout('error');
+$titles = [403 => 'Accès refusé', 404 => 'Page introuvable'];
+$title = $titles[$code] ?? 'Requête impossible';
+$this->assign('title', $title);
+if (Configure::read('debug')) {
+    $this->setLayout('dev_error');
     $this->assign('templateName', 'error400.php');
-
-    $this->start('file');
-    echo $this->element('auto_table_warning');
-    $this->end();
-endif;
+}
 ?>
-<h2><?= h($message) ?></h2>
-<p class="error">
-    <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= __d('cake', 'The requested address {0} was not found on this server.', "<strong>'{$url}'</strong>") ?>
-</p>
+<div class="error-page">
+    <h1><?= h($title) ?></h1>
+    <p class="muted">
+        <?= $code === 403
+            ? 'Cette page ne vous est pas accessible.'
+            : ($code === 404 ? 'Cette page n\'existe pas ou a été supprimée.' : 'La requête n\'a pas pu être traitée.') ?>
+    </p>
+    <a class="button" href="<?= $this->Url->build('/') ?>">Retour à l'accueil</a>
+</div>

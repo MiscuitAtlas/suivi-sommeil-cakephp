@@ -1,43 +1,39 @@
 <?php
-/**
- * Routes configuration.
- *
- * In this file, you set up routes to your controllers and their actions.
- * Routes are very important mechanism that allows you to freely connect
- * different URLs to chosen controllers and their actions (functions).
- *
- * It's loaded within the context of `Application::routes()` method which
- * receives a `RouteBuilder` instance `$routes` as method argument.
- *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- */
+declare(strict_types=1);
 
-use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
+/*
+ * Adresses en français, déclarées une par une : aucune route générique
+ * n'expose d'action par accident.
+ */
 return function (RouteBuilder $routes): void {
-    $routes->setRouteClass(DashedRoute::class);
-
     $routes->scope('/', function (RouteBuilder $builder): void {
-        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
-        $builder->connect('/users/add', ['controller' => 'Users', 'action' => 'add']);
-        $builder->connect('/dashboard', ['controller' => 'Users', 'action' => 'dashboard']);
-        $builder->connect('/users/forgot-password', ['controller' => 'Users', 'action' => 'forgotPassword']);
-        $builder->connect('/menus/update-order', ['controller' => 'Menus', 'action' => 'updateOrder']);
-        $builder->connect('/sleep/weekly-summary', ['controller' => 'Sleep', 'action' => 'weeklySummary']);
-        $builder->connect('/users/dashboard', ['controller' => 'Users', 'action' => 'dashboard']);
-        $builder->connect('/sleep/dashboard', ['controller' => 'Sleep', 'action' => 'dashboard']);
-    
-        $builder->connect('/pages/*', 'Pages::display');
-        $builder->fallbacks();
+        $builder->connect('/', ['controller' => 'Pages', 'action' => 'home']);
+
+        $builder->connect('/connexion', ['controller' => 'Users', 'action' => 'login']);
+        $builder->connect('/inscription', ['controller' => 'Users', 'action' => 'register']);
+        $builder->connect('/deconnexion', ['controller' => 'Users', 'action' => 'logout']);
+        $builder->connect('/compte', ['controller' => 'Users', 'action' => 'account']);
+        $builder->connect('/compte/mot-de-passe', ['controller' => 'Users', 'action' => 'password']);
+        $builder->connect('/compte/supprimer', ['controller' => 'Users', 'action' => 'delete']);
+
+        $builder->connect('/tableau-de-bord', ['controller' => 'Dashboard', 'action' => 'index']);
+
+        $builder->connect('/nuits', ['controller' => 'Nights', 'action' => 'index']);
+        $builder->connect('/nuits/ajouter', ['controller' => 'Nights', 'action' => 'add']);
+        $builder->connect('/nuits/{id}/modifier', ['controller' => 'Nights', 'action' => 'edit'], ['id' => '\d+', 'pass' => ['id']]);
+        $builder->connect('/nuits/{id}/supprimer', ['controller' => 'Nights', 'action' => 'delete'], ['id' => '\d+', 'pass' => ['id']]);
+        $builder->connect('/semaine', ['controller' => 'Nights', 'action' => 'week']);
+
+        $builder->connect('/admin/menus', ['controller' => 'Menus', 'action' => 'index']);
+        $builder->connect('/admin/menus/ajouter', ['controller' => 'Menus', 'action' => 'add']);
+        $builder->connect('/admin/menus/{id}/modifier', ['controller' => 'Menus', 'action' => 'edit'], ['id' => '\d+', 'pass' => ['id']]);
+        $builder->connect('/admin/menus/{id}/supprimer', ['controller' => 'Menus', 'action' => 'delete'], ['id' => '\d+', 'pass' => ['id']]);
+        $builder->connect('/admin/menus/{id}/{direction}', ['controller' => 'Menus', 'action' => 'move'], [
+            'id' => '\d+',
+            'direction' => 'monter|descendre',
+            'pass' => ['id', 'direction'],
+        ]);
     });
 };

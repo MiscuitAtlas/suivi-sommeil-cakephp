@@ -1,4 +1,7 @@
 <?php
+
+use function Cake\Core\env;
+
 /*
  * Local configuration file to provide any overrides to your app.php configuration.
  * Copy and save this file as app_local.php and make changes as required.
@@ -44,10 +47,10 @@ return [
              */
             //'port' => 'non_standard_port_number',
 
-            'username' => 'my_app',
-            'password' => 'secret',
+            'username' => 'root',
+            'password' => '',
 
-            'database' => 'my_app',
+            'database' => 'suivi_sommeil',
             /*
              * If not using the default 'public' schema with the PostgreSQL driver
              * set it here.
@@ -66,9 +69,9 @@ return [
         'test' => [
             'host' => 'localhost',
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'test_myapp',
+            'username' => 'root',
+            'password' => '',
+            'database' => 'suivi_sommeil_test',
             //'schema' => 'myapp',
             'url' => env('DATABASE_TEST_URL', 'sqlite://127.0.0.1/tmp/tests.sqlite'),
         ],
